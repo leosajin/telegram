@@ -3,43 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Моя веб-страница</title>
+    <title>Оформление заказа</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin: 50px;
+            margin: 20px;
+            transition: background 0.3s, color 0.3s;
         }
         .container {
-            max-width: 600px;
+            max-width: 400px;
             margin: auto;
             padding: 20px;
-            border: 1px solid #ccc;
             border-radius: 10px;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
         }
-        .btn {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
             border-radius: 5px;
-            transition: background 0.3s;
+            border: 1px solid #ccc;
         }
-        .btn:hover {
-            background-color: #0056b3;
+        button {
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Добро пожаловать!</h1>
-        <p>Это простая веб-страница с описанием и кнопкой.</p>
-        <a href="https://example.com" class="btn">Нажми меня</a>
+        <h1>Оформление заказа</h1>
+        <form id="orderForm">
+            <input type="text" id="name" placeholder="Ваше имя" required>
+            <input type="tel" id="phone" placeholder="Ваш телефон" required>
+            <select id="product">
+                <option value="product1">Товар 1</option>
+                <option value="product2">Товар 2</option>
+                <option value="product3">Товар 3</option>
+            </select>
+            <button type="submit">Отправить заказ</button>
+        </form>
     </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+
+        // Функция для применения цветовой темы
+        function applyTheme() {
+            const theme = tg.themeParams;
+            document.body.style.backgroundColor = theme.bg_color || "#ffffff";
+            document.body.style.color = theme.text_color || "#000000";
+            document.querySelector(".container").style.backgroundColor = theme.secondary_bg_color || "#f8f8f8";
+            document.querySelector("button").style.backgroundColor = theme.button_color || "#0088cc";
+            document.querySelector("button").style.color = theme.button_text_color || "#ffffff";
+        }
+
+        // Вызываем функцию при загрузке страницы
+        applyTheme();
+
+        // Обработчик отправки формы
+        document.getElementById("orderForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const name = document.getElementById("name").value;
+            const phone = document.getElementById("phone").value;
+            const product = document.getElementById("product").value;
+
+            const orderData = {
+                name: name,
+                phone: phone,
+                product: product
+            };
+
+            console.log("Заказ отправлен:", orderData);
+
+            tg.sendData(JSON.stringify(orderData)); // Отправка данных в бота
+            tg.close(); // Закрытие WebView после отправки
+        });
+    </script>
 
 </body>
 </html>
