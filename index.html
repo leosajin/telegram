@@ -38,9 +38,17 @@
             border-radius: 5px;
             border: 1px solid #ccc;
         }
+        #greeting {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Приветствие -->
+    <div id="greeting">Добро пожаловать!</div>
 
     <!-- Кнопка "Купить" -->
     <button id="buyButton">Купить</button>
@@ -65,6 +73,7 @@
         const tg = window.Telegram.WebApp;
         const buyButton = document.getElementById("buyButton");
         const orderFormContainer = document.getElementById("orderFormContainer");
+        const greetingDiv = document.getElementById("greeting");
 
         // Автоматически устанавливаем цветовую схему
         function applyTheme() {
@@ -78,20 +87,24 @@
 
         applyTheme();
 
-        // Автоматически заполняем имя и фамилию из Telegram
+        // Автоматически заполняем имя и фамилию из Telegram + приветствие
         function fillUserData() {
             const user = tg.initDataUnsafe.user;
             if (user) {
                 document.getElementById("name").value = user.first_name || "";
                 document.getElementById("surname").value = user.last_name || "";
+                greetingDiv.innerText = `Привет, ${user.first_name}! Добро пожаловать!`;
+            } else {
+                greetingDiv.innerText = "Добро пожаловать!";
             }
         }
+
+        fillUserData();
 
         // Показываем форму после нажатия "Купить"
         buyButton.addEventListener("click", function() {
             buyButton.style.display = "none"; // Скрываем кнопку
             orderFormContainer.style.display = "block"; // Показываем форму
-            fillUserData();
         });
 
         // Отправка формы заказа
